@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define _COLEMAK 0
+#define _QWERTY  1
+#define _FUNC    2
+#define _CODE    3
+#define _ADJUST  4
+
+/ {
+        behaviors {
+            td_esc: tap_dance_mod_esc {
+                compatible = "zmk,behavior-tap-dance";
+                label = "TAP_DANCE_MOD_ESC";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                bindings = <&kp ESC>, <&kp CAPSLOCK>;
+            };
+
+            td_tab: tap_dance_mod_tap {
+                compatible = "zmk,behavior-tap-dance";
+                label = "TAP_DANCE_MOD_TAP";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                bindings = <&kp TAB>, <&kp LC(TAB)>;
+            };
+
+            td_grave: tap_dance_mod_grave {
+                compatible = "zmk,behavior-tap-dance";
+                label = "TAP_DANCE_MOD_GRAVE";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                bindings = <&kp GRAVE>, <&kp LG(GRAVE)>;
+            };
+
+            td_lgui: tap_dance_mod_lgui {
+                compatible = "zmk,behavior-tap-dance";
+                label = "TAP_DANCE_MOD_GUI";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                bindings = <&kp LGUI>, <&kp LG(SPACE)>;
+            };
+        };
+
+        keymap {
+                compatible = "zmk,keymap";
+
+                colemak_dh_layer {
+// -----------------------------------------------------------------------------------------
+// |  TAB |  Q  |  W  |  F  |   P   |   B   |   |   J   |   L   |  U  |  Y  |  ;  |  -   |
+// | CTRL |  A  |  R  |  S  |   T   |   G   |   |   M   |   N   |  E  |  I  |  O  |  '   |
+// | SHFT |  Z  |  X  |  C  |   D   |   V   |   |   K   |   H   |  ,  |  .  |  /  |  =   |
+//                    | GUI |  DEL  |  SPC  |   |  ENT  |  BSPC | ALT |
+//                    |     | _FUNC | _CODE |   | _CODE | _FUNC | ALT |
+                        bindings = <
+   &td_tab    &kp Q       &kp W      &kp F      &kp P         &kp B              &kp J         &kp L          &kp U           &kp Y      &kp SEMI   &kp MINUS
+   &kp LCTRL  &mt LCTRL A &kp R      &kp S      &mt LALT T    &kp G              &kp M         &mt RGUI N     &kp E           &kp I      &kp O      &mt RCTL SQT
+//   &kp LSHFT  &mt LSHFT Z &kp X      &kp C      &kp D         &kp V              &kp K         &kp H          &kp COMMA       &kp DOT    &kp FSLH   &lt _ADJUST EQAL
+                                     &td_lgui   &lt _FUNC DEL &lt _CODE SPACE    &lt _CODE RET &lt _FUNC BSPC &kp RALT
+                        >;
+                };
+
+                qwerty_layer {
+// -----------------------------------------------------------------------------------------
+// |  TAB |  Q  |  W  |  E  |   R   |   T   |   |   Y   |   U   |  I  |  O  |  P  |  -   |
+// | CTRL |  A  |  S  |  D  |   F   |   G   |   |   H   |   J   |  K  |  L  |  ;  |  '   |
+// | SHFT |  Z  |  X  |  C  |   V   |   B   |   |   N   |   M   |  ,  |  .  |  /  |  =   |
+//                    | GUI |  DEL  |  SPC  |   |  ENT  |  BSPC | ALT |
+//                    |     | _FUNC | _CODE |   | _CODE | _FUNC |     |
+                        bindings = <
+   &td_tab    &kp Q       &kp W      &kp E      &kp R         &kp T              &kp Y         &kp U          &kp I           &kp O      &kp P      &kp MINUS
+   &kp LCTRL  &mt LCTRL A &kp S      &kp D      &mt LALT F    &kp G              &kp H         &mt RGUI J     &kp K           &kp L      &kp SEMI   &mt RCTL SQT
+//   &kp LSHFT  &mt LSHFT Z &kp X      &kp C      &kp V         &kp B              &kp N         &kp M          &kp COMMA       &kp DOT    &kp FSLH   &lt _ADJUST EQAL
+                                     &td_lgui   &lt _FUNC DEL &lt _CODE SPACE    &lt _CODE RET &lt _FUNC BSPC &kp RALT
+                        >;
+                };
+
+                function_layer {
+// -----------------------------------------------------------------------------------------
+// |  ESC | F1  | F2  | F3   |  F4   |  F5   |   |  F6   |  F7   | F8  | F9  | F10 | F11  |
+// | BTCLR| BR+ | FFD | PLAY |  VOL+ |       |   |  DEL  |  LFT  |  UP | RGT | PGU | F12  |
+// |      | BR- | RWD | MUTE |  VOL- |       |   |  INS  |  HOM  | DWN | END | PGD |      |
+//                    | GUI  |  ESC  |       |   |       |  ESC  | ALT |
+//                    |      | _FUNC |       |   |       | _FUNC |     |
+                        bindings = <
+   &kp ESC             &kp F1       &kp F2    &kp F3     &kp F4        &kp F5             &kp F6        &kp F7         &kp F8          &kp F9     &kp F10    &kp F11
+   &kp LG(LC(LS(N4)))  &kp C_BRI_UP &kp C_FF  &kp C_PP   &kp C_VOL_UP  &kp LG(LBRC)       &kp DEL       &kp LEFT       &kp UP          &kp RIGHT  &kp PG_UP  &kp F12
+   &kp LSHFT           &kp C_BRI_DN &kp C_RW  &kp C_MUTE &kp C_VOL_DN  &kp LG(RBRC)       &kp INS       &kp HOME       &kp DOWN        &kp END    &kp PG_DN  &kp LG(LC(Q))
+                                              &trans     &td_esc       &none              &none         &td_esc        &trans
+                        >;
+                };
+
+                code_layer {
+// -----------------------------------------------------------------------------------------
+// |   `  |  1  |  2  |  3   |   4   |   5   |   |   6   |   7   |  8  |  9  |  0  |  \   |
+// |   ~  |  !  |  @  |  #   |   $   |   %   |   |   ^   |   &   |  *  |  (  |  )  | "|"  |
+// |      |     |     |      |       |       |   |       |   {   |  }  |  [  |  ]  |  +   |
+//                    | GUI  |  ESC  |       |   |       |  ESC  | ALT |
+//                    |      | _FUNC |       |   |       | _FUNC |     |
+                        bindings = <
+   &td_grave  &kp N1       &kp N2    &kp N3     &kp N4        &kp N5             &kp N6        &kp N7         &kp N8          &kp N9     &kp N0     &kp BSLH
+   &kp TILDE  &kp EXCL     &kp AT    &kp HASH   &kp DLLR      &kp PRCNT          &kp CARET     &kp AMPS       &kp KP_MULTIPLY &kp LPAR   &kp RPAR   &kp PIPE
+//   &none      &none        &none     &none      &none         &none              &none         &kp LBRCL      &kp RBRC        &kp LBKT   &kp RBKT   &kp PLUS
+                                     &trans     &td_esc       &none              &none         &td_esc        &trans
+                        >;
+                };
+
+                adjust_layer {
+// -----------------------------------------------------------------------------------------
+// |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BKSP |
+// | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   | DEL | LFT |  UP | RGT | PGU | F12  |
+// | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
+//                    | GUI |     | SPC |   | ENT |     | ALT |
+                        bindings = <
+   &kp  TAB   &kp EXCL     &kp AT       &kp HASH     &kp DLLR     &kp PRCNT      &kp CARET     &kp AMPS       &kp KP_MULTIPLY &kp LPAR   &kp RPAR   &kp BSPC
+   &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4   &kp DEL       &kp LEFT       &kp UP          &kp RIGHT  &kp PG_UP  &kp F12
+   &kp LSHFT  &trans       &trans       &trans       &trans       &trans         &kp UNDER     &kp PLUS       &kp LBRC        &kp RBRC   &kp PIPE   &kp TILDE
+                                        &kp LGUI     &trans       &kp SPACE      &kp RET       &trans         &kp RALT
+                        >;
+                };
+        };
+};
